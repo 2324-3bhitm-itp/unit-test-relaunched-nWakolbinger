@@ -1,0 +1,28 @@
+name: Test and report project
+run-name: ${{ github.actor }} running Unit Tests 🚀
+on:
+  - push
+  - workflow_dispatch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: compile & test
+        run: mvn -B test
+
+      - name: Coverage Report
+        run: mvn -B jacoco:report
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-Report
+          path: target/site/jacoco
+
